@@ -44,7 +44,7 @@ def read_page_ids(pages_file_name):
     try:
         with open(pages_file_name, 'r') as f:
             data = json.load(f)
-            return data['page_ids']  # Assuming the JSON has a 'product_ids' key
+            return data['page_ids']  
     except FileNotFoundError:
         return []
 
@@ -67,7 +67,7 @@ def read_product_ids(products_file_name):
     try:
         with open(products_file_name, 'r') as f:
             data = json.load(f)
-            return data['product_ids']  # Assuming the JSON has a 'product_ids' key
+            return data['product_ids']  
     except FileNotFoundError:
         return []
 
