@@ -61,9 +61,6 @@ def get_product_by_id(product_id):
     """Retrieves a product from a WooCommerce store by its ID.
 
     Args:
-        store_url (str): The URL of the WooCommerce store.
-        consumer_key (str): The consumer key for authentication.
-        consumer_secret (str): The consumer secret for authentication.
         product_id (int): The ID of the product to retrieve.
 
     Returns:
@@ -88,9 +85,6 @@ def duplicate_product(product_id):
     """Duplicates a product in a WooCommerce store.
 
     Args:
-        store_url (str): The URL of the WooCommerce store.
-        consumer_key (str): The consumer key for authentication.
-        consumer_secret (str): The consumer secret for authentication.
         product_id (int): The ID of the product to duplicate.
 
     Returns:
@@ -143,7 +137,7 @@ def optimize_product_for_seo_gemini(model_type, prompt):
         genai.configure(api_key=GEMINI_API_KEY)
         model = genai.GenerativeModel(model_type)
 
-        #Get response from Gemini
+        #Get a response from Gemini
         response = model.generate_content(prompt)
         
         # Extract the text from the correct location in the response
@@ -153,7 +147,7 @@ def optimize_product_for_seo_gemini(model_type, prompt):
         cleaned_json_str = generated_text.strip("```json\n")
         json_str = json.dumps(cleaned_json_str, ensure_ascii=False)  # ensure_ascii=False preserves Unicode characters
 
-        # Now you can safely parse the JSON
+        # Parse the JSON
         parsed_data = json.loads(json_str)
         data = json.loads(parsed_data)
 
@@ -168,19 +162,20 @@ def optimize_product_for_seo_gemini(model_type, prompt):
 
 def main():
     """Main function for the Streamlit app."""
-    #st.title("WooCommerce Product Optimizer (powered by Gemini)")
+    
     st.set_page_config(
-        page_title="WooCommerce Product Listings Optimization with Gemini",
+        page_title="WooCommerce Product Listings Optimization with Google Gemini",
         page_icon=":rocket:",
     )
 
-    st.subheader("WooCommerce Product Listings Optimization with Gemini", divider="blue")
+    st.subheader("WooCommerce Product Listings Optimization with Google Gemini", divider="blue")
 
     model_type = st.radio(
         "Choose your Gemini version",
         GEMINI_MODEL_TYPEs
     )
-
+    
+    #Get the total number of prpduct pages in the WooCommerce store
     product_pages_count = get_product_pages_count()
  
     if product_pages_count: 
@@ -196,9 +191,9 @@ def main():
         if (generate_t2t and page_number) and (page_number not in existing_pages_ids):
        
             
-            #Read previously processed products IDs to avoid processing them again.
+            #Reads previously processed products IDs to avoid processing them again.
             existing_product_ids = read_product_ids(PRODUCTS_FILE_NAME)
-            # Get products on the page numbe "page_number"
+            # Gets products on the page numbe "page_number"
             all_products = get_products(page_number)
             if all_products :
                 for product in all_products:
@@ -235,7 +230,7 @@ def main():
                                         product_title = product_data['name']
                                         product_description = product_data['description']
 
-                                        #Prepare a prompt for Gemini
+                                        #Prepare the prompt for Gemini
                                         prompt = prep_prompt (product_title, product_description)
 
                                         #Call Gemini to get an seo-optimized product title & description
@@ -259,7 +254,7 @@ def main():
                                                 
                                                 update_processed_product_ids(product_id)
                                             else:
-                                                #print("Error updating product.")
+                                                
                                                 st.error(f"Error updating information of original product {product_id}", icon="🚨") 
                                                 log_error(f"{product_id} >> An error occurred while trying to update information of the original product.", LOGS_FILE)
                                         else: 
