@@ -12,8 +12,6 @@ from config import *
 from helpers import *
 
 
-
-
 def get_products(page_number):
     """Retrieves all products from a WooCommerce store.
 
